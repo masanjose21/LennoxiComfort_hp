@@ -4,7 +4,7 @@ Lennox iComfort WiFi Climate Component for Home Assisant.
 By Jacob Southard (github.com/thevoltagesource)
 Based on the work of Jerome Avondo (github.com/ut666)
 
-Tested against Home Assistant Version: 2024.1.0
+Tested against Home Assistant Version: 2024.8.3
 
 Notes:
   The away mode set points can only be set on the thermostat.  The code below
@@ -16,6 +16,7 @@ Issues:
 Ideas/Future:
 
 Change log:
+  20240906 - Implement turn on and turn off methods for climate entity interface
   20240906 - Climate entity auxiliary heater is deprecated as of HA 2024.4
   20240103 - Changed const CURRENT_HVAC_* to use HVACAction.*
              Changed const HVAC_MODE_* to use HVACMode.*
@@ -104,6 +105,8 @@ FAN_CIRCULATE = 'Circulate'
 SUPPORT_FLAGS = (ClimateEntityFeature.TARGET_TEMPERATURE |
                  ClimateEntityFeature.TARGET_TEMPERATURE_RANGE |
                  ClimateEntityFeature.PRESET_MODE |
+                 ClimateEntityFeature.TURN_OFF |
+                 ClimateEntityFeature.TURN_ON |
                  ClimateEntityFeature.FAN_MODE) 
 # AUX_HEAT deprecated 
 #
@@ -168,6 +171,13 @@ class LennoxClimate(ClimateEntity):
         self._api = api
         self._min_temp = min_temp
         self._max_temp = max_temp
+        self._enable_turn_on_off_backwards_compatibility = False
+
+    async def async_turn_off(self) -> None:
+        await self.async_set_hvac_mode(HVACMode.OFF)
+
+    async def async_turn_on(self) -> None:
+        await self.async_set_hvac_mode(HVACMode.HEAT_COOL)
 
     def update(self):
         """Update data from the thermostat API."""
