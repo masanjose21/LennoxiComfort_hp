@@ -16,6 +16,7 @@ Issues:
 Ideas/Future:
 
 Change log:
+  20240906 - Climate entity auxiliary heater is deprecated as of HA 2024.4
   20240103 - Changed const CURRENT_HVAC_* to use HVACAction.*
              Changed const HVAC_MODE_* to use HVACMode.*
              Changed const SUPPORT_* to use ClimateEntityFeature.*
@@ -103,8 +104,10 @@ FAN_CIRCULATE = 'Circulate'
 SUPPORT_FLAGS = (ClimateEntityFeature.TARGET_TEMPERATURE |
                  ClimateEntityFeature.TARGET_TEMPERATURE_RANGE |
                  ClimateEntityFeature.PRESET_MODE |
-                 ClimateEntityFeature.FAN_MODE |
-                 ClimateEntityFeature.AUX_HEAT)
+                 ClimateEntityFeature.FAN_MODE) 
+# AUX_HEAT deprecated 
+#
+#                 ClimateEntityFeature.AUX_HEAT)
 
 FAN_MODES = [
     FAN_AUTO, FAN_ON, FAN_CIRCULATE
@@ -280,12 +283,13 @@ class LennoxClimate(ClimateEntity):
         """Return the current away mode status."""
         return self._api.away_mode
 
-    @property
-    def is_aux_heat(self):
-        """Return the current away mode status."""
-        if self._api.op_mode == 4:
-            return True
-        return False
+# aux_heat depecrated
+#    @property
+#    def is_aux_heat(self):
+#        """Return the current away mode status."""
+#        if self._api.op_mode == 4:
+#            return True
+#        return False
 
     @property
     def fan_mode(self):
@@ -332,11 +336,12 @@ class LennoxClimate(ClimateEntity):
         """Turn away mode off."""
         self._api.away_mode = 0
 
-    def turn_aux_heat_on(self):
-        """Turn auxiliary heater on."""
-        self._api.op_mode = 4
+# aux heat depecrated
+#    def turn_aux_heat_on(self):
+#        """Turn auxiliary heater on."""
+#        self._api.op_mode = 4
 
-    def turn_aux_heat_off(self):
-        """Turn auxiliary heater off."""
-        self.set_hvac_mode(HVACMode.HEAT)
+#    def turn_aux_heat_off(self):
+#        """Turn auxiliary heater off."""
+#        self.set_hvac_mode(HVACMode.HEAT)
 
